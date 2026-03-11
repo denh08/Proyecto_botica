@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto - Botica Virgen de Huata</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #fff9f0, #fffbf5);
+            color: #5a4a3a;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ef9b28, #f5a835);
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .contenedor {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px 30px 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+            border: 1px solid #ffe8d6;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #b8671f;
+            font-size: 24px;
+        }
+
+        .mensaje {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #f5ead4;
+            color: #8a5a12;
+            border: 1px solid #e8d4b8;
+        }
+
+        .error {
+            background: #ffe8e8;
+            color: #b42318;
+            border: 1px solid #f3b6b6;
+        }
+
+        .grupo {
+            margin-bottom: 18px;
+        }
+
+        .grupo label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #7a5a2e;
+            font-size: 14px;
+        }
+
+        .grupo input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e8d4b8;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #fff9f5;
+        }
+
+        .grupo input:focus {
+            outline: none;
+            border-color: #ef9b28;
+            box-shadow: 0 0 0 3px rgba(239, 155, 40, 0.12);
+        }
+
+        .info-producto {
+            background: #fffaf5;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ef9b28;
+        }
+
+        .info-producto p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .info-producto strong {
+            color: #b8671f;
+        }
+
+        .botones {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-guardar {
+            background: #ef9b28;
+            color: white;
+        }
+
+        .btn-guardar:hover {
+            background: #e08a1c;
+        }
+
+        .btn-cancelar {
+            background: #f0e7d8;
+            color: #8a5a12;
+        }
+
+        .btn-cancelar:hover {
+            background: #e8d4b8;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+
+            .botones {
+                flex-direction: column;
+            }
+
+            .btn {
+                flex: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✏️ Editar Medicamento</h1>
+    </div>
+
+    <div class="contenedor">
+        <div class="card">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mensaje {% if message.tags == 'success' %}success{% else %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="info-producto">
+                <p><strong>ID:</strong> {{ producto.id }}</p>
+                <p><strong>Creado:</strong> Medicamento registrado en el sistema</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="grupo">
+                    <label for="codigo_barra">Código de barra (opcional)</label>
+                    <input type="text" id="codigo_barra" name="codigo_barra" value="{{ producto.codigo_barra }}" placeholder="Código de barra">
+                </div>
+
+                <div class="grupo">
+                    <label for="nombre">Nombre del medicamento *</label>
+                    <input type="text" id="nombre" name="nombre" value="{{ producto.nombre }}" placeholder="Nombre del medicamento" required>
+                </div>
+
+                <div class="grupo">
+                    <label for="precio_venta">Precio de venta (S/) *</label>
+                    <input type="number" id="precio_venta" name="precio_venta" value="{{ producto.precio_venta }}" placeholder="0.00" step="0.01" required>
+                    <small style="color: #999; display: block; margin-top: 4px;">📝 Nota: El precio de compra se actualizará automáticamente</small>
+                </div>
+
+                <div class="grupo">
+                    <label for="stock_minimo">Stock mínimo *</label>
+                    <input type="number" id="stock_minimo" name="stock_minimo" value="{{ producto.stock_minimo }}" placeholder="10" min="0" required>
+                </div>
+
+                <div class="botones">
+                    <button type="submit" class="btn btn-guardar">💾 Guardar cambios</button>
+                    <a href="{% url 'ingreso_productos' %}" class="btn btn-cancelar">cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

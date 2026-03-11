@@ -1,0 +1,18 @@
+[Unit]
+Description=Botica Virgen de Huata Gunicorn Application
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/home/botica/proyecto_botica
+Environment="PATH=/home/botica/proyecto_botica/venv/bin"
+ExecStart=/home/botica/proyecto_botica/venv/bin/gunicorn \
+    --workers 3 \
+    --bind unix:/run/gunicorn.sock \
+    --timeout 120 \
+    botica.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

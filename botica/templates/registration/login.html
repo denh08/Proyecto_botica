@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Botica Virgen de Huata</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dff7f2, #f4fffd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contenedor-login {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border: 1px solid #d9efe9;
+        }
+
+        .cabecera {
+            background: linear-gradient(135deg, #0f9d8a, #32bfa6);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .cabecera h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .cabecera p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .icono {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .cuerpo {
+            padding: 30px 28px;
+        }
+
+        .titulo-form {
+            text-align: center;
+            margin-bottom: 22px;
+            color: #145e55;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .mensaje-error {
+            background: #ffe5e5;
+            color: #b42318;
+            border: 1px solid #f5b5b5;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .mensaje-info {
+            background: #eaf7ff;
+            color: #155b75;
+            border: 1px solid #b8def1;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .grupo {
+            margin-bottom: 18px;
+        }
+
+        .grupo label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2b4a45;
+            font-size: 14px;
+        }
+
+        .grupo input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #c8e3dc;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+            background: #fbfffe;
+            transition: 0.2s ease;
+        }
+
+        .grupo input:focus {
+            border-color: #26a69a;
+            box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.12);
+        }
+
+        .boton-login {
+            width: 100%;
+            background: linear-gradient(135deg, #0f9d8a, #1fb59c);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .boton-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(15, 157, 138, 0.25);
+        }
+
+        .pie {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 13px;
+            color: #64827d;
+        }
+
+        .pie strong {
+            color: #0f7f70;
+        }
+
+        @media (max-width: 480px) {
+            .cabecera h1 {
+                font-size: 24px;
+            }
+
+            .titulo-form {
+                font-size: 20px;
+            }
+
+            .cuerpo {
+                padding: 24px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-login">
+        <div class="cabecera">
+            <div class="icono">💊</div>
+            <h1>Botica Virgen de Huata</h1>
+            <p>Sistema web de ventas e inventario</p>
+        </div>
+
+        <div class="cuerpo">
+            <div class="titulo-form">Iniciar sesión</div>
+
+            {% if form.errors %}
+                <div class="mensaje-error">
+                    Usuario o contraseña incorrectos.
+                </div>
+            {% endif %}
+
+            {% if next %}
+                {% if user.is_authenticated %}
+                    <div class="mensaje-info">
+                        Tu cuenta no tiene acceso a esta página.
+                    </div>
+                {% else %}
+                    <div class="mensaje-info">
+                        Por favor inicia sesión para continuar.
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <form method="post">
+    {% csrf_token %}
+
+    <div class="grupo">
+        <label for="id_username">Usuario</label>
+        {{ form.username }}
+    </div>
+
+    <div class="grupo">
+        <label for="id_password">Contraseña</label>
+        {{ form.password }}
+    </div>
+
+    <button type="submit" class="boton-login">Ingresar al sistema</button>
+
+    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        <a href="/recuperar-cuenta/" style="color: #0f7f70; font-weight: bold; text-decoration: none; font-size: 13px;">
+            🔑 Recuperar cuenta
+        </a>
+        <span style="color: #ccc;">|</span>
+        <a href="/registro/" style="color: #0f9d8a; font-weight: bold; text-decoration: none; font-size: 13px;">
+            📝 Crear cuenta
+        </a>
+    </div>
+</form>

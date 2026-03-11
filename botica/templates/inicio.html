@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Botica Virgen de Huata</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #eefaf7, #f9fffd);
+            color: #20413d;
+        }
+
+        .topbar {
+            background: linear-gradient(135deg, #0f9d8a, #2ebba1);
+            color: white;
+            padding: 20px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .usuario {
+            text-align: right;
+        }
+
+        .usuario strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .btn-salir {
+            display: inline-block;
+            text-decoration: none;
+            background: white;
+            color: #0f7f70;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px 30px 20px;
+        }
+
+        .bienvenida {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+            border: 1px solid #dcefe9;
+            margin-bottom: 28px;
+        }
+
+        .bienvenida h2 {
+            margin: 0 0 10px 0;
+            color: #145e55;
+        }
+
+        .bienvenida p {
+            margin: 0;
+            color: #56746f;
+            line-height: 1.6;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+            border: 1px solid #dcefe9;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-height: 320px;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .icono {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            margin-bottom: 18px;
+        }
+
+        .ventas {
+            background: #e7f8f4;
+        }
+
+        .inventario {
+            background: #eaf0ff;
+        }
+
+        .productos {
+            background: #fff4e8;
+        }
+
+        .menu-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 24px;
+            color: #174f48;
+        }
+
+        .menu-card p {
+            margin: 0 0 20px 0;
+            color: #5e7a75;
+            line-height: 1.6;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .btn-card {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-ventas {
+            background: #0f9d8a;
+        }
+
+        .btn-inventario {
+            background: #3f7ae0;
+        }
+
+        .btn-productos {
+            background: #ef9b28;
+        }
+
+        @media (max-width: 700px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .usuario {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div>
+            <h1>Botica Virgen de Huata</h1>
+            <p>Menú principal del sistema</p>
+        </div>
+
+        <div class="usuario">
+            <strong>Usuario: {{ user.username }}</strong>
+            <form method="post" action="/logout/" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-salir" style="border: none; background: white; color: #0f7f70; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer;">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="contenedor">
+        <div class="bienvenida">
+            <h2>Bienvenido al sistema</h2>
+            <p>
+                Selecciona una opción del menú para gestionar las ventas,
+                revisar el inventario o registrar nuevos productos.
+            </p>
+        </div>
+
+        <div class="menu-grid">
+            <a href="/ventas/" class="menu-card">
+                <div class="icono ventas">💳</div>
+                <h3>Ventas</h3>
+                <p>
+                    Accede al módulo de ventas para revisar y registrar operaciones realizadas.
+                </p>
+                <span class="btn-card btn-ventas">Entrar a ventas</span>
+            </a>
+
+            <a href="/inventario/" class="menu-card">
+                <div class="icono inventario">📦</div>
+                <h3>Inventario</h3>
+                <p>
+                    Consulta los lotes disponibles, el stock actual y el control por vencimiento.
+                </p>
+                <span class="btn-card btn-inventario">Ver inventario</span>
+            </a>
+
+            <a href="/ingreso-productos/" class="menu-card">
+                <div class="icono productos">💊</div>
+                <h3>Ingreso de productos</h3>
+                <p>
+                    Registra nuevos medicamentos y productos para incorporarlos al sistema.
+                </p>
+                <span class="btn-card btn-productos">Agregar producto</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

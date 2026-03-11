@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso de Productos - Botica Virgen de Huata</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #fff9f0, #fffbf5);
+            color: #5a4a3a;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ef9b28, #f5a835);
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .contenedor {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px 30px 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+            border: 1px solid #ffe8d6;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #b8671f;
+            font-size: 20px;
+        }
+
+        .mensaje {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #f5ead4;
+            color: #8a5a12;
+            border: 1px solid #e8d4b8;
+        }
+
+        .error {
+            background: #ffe8e8;
+            color: #b42318;
+            border: 1px solid #f3b6b6;
+        }
+
+        .grupo {
+            margin-bottom: 16px;
+        }
+
+        .grupo label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #7a5a2e;
+            font-size: 13px;
+        }
+
+        .grupo input,
+        .grupo select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #e8d4b8;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fff9f5;
+        }
+
+        .grupo input:focus,
+        .grupo select:focus {
+            outline: none;
+            border-color: #ef9b28;
+            box-shadow: 0 0 0 3px rgba(239, 155, 40, 0.12);
+        }
+
+        .seccion {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0e7d8;
+        }
+
+        .seccion:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .titulo-seccion {
+            font-weight: bold;
+            color: #b8671f;
+            margin-bottom: 14px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dos-columnas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .botones {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-guardar {
+            background: #ef9b28;
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-guardar:hover {
+            background: #e08a1c;
+        }
+
+        .btn-menu {
+            background: #fff2de;
+            color: #8a5a12;
+        }
+
+        .btn-menu:hover {
+            background: #ffe8d6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            font-size: 13px;
+        }
+
+        table th,
+        table td {
+            border-bottom: 1px solid #f0e7d8;
+            padding: 10px 8px;
+            text-align: left;
+        }
+
+        table th {
+            color: #7a5a2e;
+            background: #fffaf5;
+            font-weight: bold;
+        }
+
+        table tr:hover {
+            background: #fffdf9;
+        }
+
+        .sin-datos {
+            color: #a89070;
+            margin-top: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #e8d4b8;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fff9f5;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ef9b28;
+            box-shadow: 0 0 0 3px rgba(239, 155, 40, 0.12);
+        }
+
+        .error-field {
+            color: #b42318;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dos-columnas {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💊 Ingreso de Productos/Medicamentos</h1>
+    </div>
+
+    <div class="contenedor">
+        <div class="grid">
+            <div class="card">
+                <h2>Agregar nuevo medicamento con lote</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mensaje {% if message.tags == 'success' %}success{% else %}error{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- SECCIÓN: DATOS DEL PRODUCTO -->
+                    <div class="seccion">
+                        <div class="titulo-seccion">📦 Información del Producto</div>
+
+                        <div class="grupo">
+                            <label for="{{ form.codigo_barra.id_for_label }}">{{ form.codigo_barra.label }}</label>
+                            {{ form.codigo_barra }}
+                            {% if form.codigo_barra.errors %}
+                                <div class="error-field">{{ form.codigo_barra.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="grupo">
+                            <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }} *</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="error-field">{{ form.nombre.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="grupo">
+                            <label for="{{ form.precio_venta.id_for_label }}">{{ form.precio_venta.label }} *</label>
+                            {{ form.precio_venta }}
+                            <small style="color: #999; display: block; margin-top: 4px;">📝 Nota: El precio de compra se asignará automáticamente igual al precio de venta</small>
+                            {% if form.precio_venta.errors %}
+                                <div class="error-field">{{ form.precio_venta.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="grupo">
+                            <label for="{{ form.stock_minimo.id_for_label }}">{{ form.stock_minimo.label }} *</label>
+                            {{ form.stock_minimo }}
+                            {% if form.stock_minimo.errors %}
+                                <div class="error-field">{{ form.stock_minimo.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: DATOS DEL LOTE -->
+                    <div class="seccion">
+                        <div class="titulo-seccion">📋 Información del Lote</div>
+
+                        <div class="grupo">
+                            <label for="{{ form.numero_lote.id_for_label }}">{{ form.numero_lote.label }} *</label>
+                            {{ form.numero_lote }}
+                            {% if form.numero_lote.errors %}
+                                <div class="error-field">{{ form.numero_lote.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="dos-columnas">
+                            <div class="grupo">
+                                <label for="{{ form.fecha_vencimiento.id_for_label }}">{{ form.fecha_vencimiento.label }} *</label>
+                                {{ form.fecha_vencimiento }}
+                                {% if form.fecha_vencimiento.help_text %}
+                                    <small style="color: #999; display: block; margin-top: 4px;">{{ form.fecha_vencimiento.help_text }}</small>
+                                {% endif %}
+                                {% if form.fecha_vencimiento.errors %}
+                                    <div class="error-field">{{ form.fecha_vencimiento.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="grupo">
+                                <label for="{{ form.stock.id_for_label }}">{{ form.stock.label }} *</label>
+                                {{ form.stock }}
+                                {% if form.stock.errors %}
+                                    <div class="error-field">{{ form.stock.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="botones">
+                        <button type="submit" class="btn btn-guardar">✅ Agregar Medicamento y Lote</button>
+                        <a href="/" class="btn btn-menu">Volver al menú principal</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Información reciente</h2>
+
+                <div style="margin-bottom: 24px;">
+                    <div class="titulo-seccion">Lotes agregados</div>
+                    {% if lotes_recientes %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicamento</th>
+                                    <th>Lote</th>
+                                    <th>Vencimiento</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lote in lotes_recientes %}
+                                <tr>
+                                    <td><strong>{{ lote.producto.nombre|truncatewords:2 }}</strong></td>
+                                    <td>{{ lote.numero_lote }}</td>
+                                    <td>{{ lote.fecha_vencimiento|date:"m/Y" }}</td>
+                                    <td><strong>{{ lote.stock }}</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="sin-datos">No hay lotes registrados aún</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <div class="titulo-seccion">Medicamentos activos</div>
+                    {% if medicamentos %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for medicamento in medicamentos %}
+                                <tr>
+                                    <td>{{ medicamento.nombre|truncatewords:3 }}</td>
+                                    <td>S/ {{ medicamento.precio_venta }}</td>
+                                    <td>{{ medicamento.stock_minimo }}</td>
+                                    <td style="text-align: center;">
+                                        <a href="{% url 'editar_producto' medicamento.id %}" title="Editar medicamento" style="color: #ef9b28; text-decoration: none; font-size: 16px;">✏️</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="sin-datos">No hay medicamentos registrados</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

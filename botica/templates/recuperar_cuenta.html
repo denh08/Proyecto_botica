@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Cuenta - Botica Virgen de Huata</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dff7f2, #f4fffd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contenedor-recovery {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border: 1px solid #d9efe9;
+        }
+
+        .cabecera {
+            background: linear-gradient(135deg, #0f9d8a, #32bfa6);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .cabecera h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .cabecera p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .cuerpo {
+            padding: 30px;
+        }
+
+        .titulo-form {
+            font-size: 18px;
+            font-weight: bold;
+            color: #145e55;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .grupo {
+            margin-bottom: 20px;
+        }
+
+        .grupo label {
+            display: block;
+            font-weight: bold;
+            color: #2a6a62;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .opcion-grupo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border: 2px solid #e0ebe6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .opcion-grupo:hover {
+            background: #f7fbf9;
+            border-color: #0f9d8a;
+        }
+
+        .opcion-grupo input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #0f9d8a;
+        }
+
+        .opcion-grupo label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            color: #145e55;
+        }
+
+        .dato-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cfe5de;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #fcfffe;
+            transition: border-color 0.3s ease;
+        }
+
+        .dato-input:focus {
+            outline: none;
+            border-color: #0f9d8a;
+            box-shadow: 0 0 0 3px rgba(15, 157, 138, 0.15);
+        }
+
+        .botones {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-recuperar {
+            background: #0f9d8a;
+            color: white;
+        }
+
+        .btn-recuperar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(15, 157, 138, 0.25);
+        }
+
+        .btn-volver {
+            background: #e7f8f4;
+            color: #145e55;
+        }
+
+        .btn-volver:hover {
+            background: #d8f1ed;
+        }
+
+        .pie {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #64827d;
+        }
+
+        .pie a {
+            color: #0f9d8a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .pie a:hover {
+            text-decoration: underline;
+        }
+
+        .mensaje-exito {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #e8f8f1;
+            color: #166a4f;
+            border: 1px solid #bfe8d6;
+        }
+
+        .mensaje-error {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #ffe8e8;
+            color: #b42318;
+            border: 1px solid #f3b6b6;
+        }
+
+        @media (max-width: 480px) {
+            .cabecera h1 {
+                font-size: 20px;
+            }
+
+            .cuerpo {
+                padding: 20px;
+            }
+
+            .titulo-form {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-recovery">
+        <div class="cabecera">
+            <h1>🔑 Recuperar Cuenta</h1>
+            <p>Recupera acceso a tu cuenta</p>
+        </div>
+
+        <div class="cuerpo">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mensaje-{% if message.tags == 'success' %}exito{% else %}error{% endif %}">
+                        {{ message|safe }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <h3 class="titulo-form">¿Cómo deseas recuperar tu cuenta?</h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="opciones">
+                    {% for radio in form.metodo %}
+                        <div class="opcion-grupo">
+                            {{ radio.tag }}
+                            <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="grupo">
+                    <label for="{{ form.dato.id_for_label }}">{{ form.dato.label }}</label>
+                    {{ form.dato }}
+                    {% if form.dato.errors %}
+                        <div style="color: #b42318; font-size: 12px; margin-top: 8px;">
+                            {{ form.dato.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="botones">
+                    <button type="submit" class="btn-recuperar">Enviar enlace</button>
+                    <a href="/login/" style="flex: 1; display: flex; align-items: center; justify-content: center; background: #e7f8f4; color: #145e55; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px; transition: background 0.2s ease;">
+                        Volver
+                    </a>
+                </div>
+
+                <div class="pie">
+                    ¿Ya tienes acceso? <a href="/login/">Inicia sesión aquí</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

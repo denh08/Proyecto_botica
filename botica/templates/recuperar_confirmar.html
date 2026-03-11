@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Establecer nueva contraseña - Botica Virgen de Huata</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dff7f2, #f4fffd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contenedor-reset {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border: 1px solid #d9efe9;
+        }
+
+        .cabecera {
+            background: linear-gradient(135deg, #0f9d8a, #32bfa6);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .cabecera h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .cabecera p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .cuerpo {
+            padding: 30px;
+        }
+
+        .titulo-form {
+            font-size: 18px;
+            font-weight: bold;
+            color: #145e55;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .grupo {
+            margin-bottom: 20px;
+        }
+
+        .grupo label {
+            display: block;
+            font-weight: bold;
+            color: #2a6a62;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .grupo input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cfe5de;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #fcfffe;
+            transition: border-color 0.3s ease;
+        }
+
+        .grupo input:focus {
+            outline: none;
+            border-color: #0f9d8a;
+            box-shadow: 0 0 0 3px rgba(15, 157, 138, 0.15);
+        }
+
+        .indicador-fuerza {
+            margin-top: 6px;
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            background: #f0f0f0;
+            display: none;
+        }
+
+        .indicador-fuerza.debil {
+            background: #ffebee;
+            color: #c62828;
+            display: block;
+        }
+
+        .indicador-fuerza.normal {
+            background: #fff3e0;
+            color: #e65100;
+            display: block;
+        }
+
+        .indicador-fuerza.fuerte {
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+        }
+
+        .botones {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button, a {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-confirmar {
+            background: #0f9d8a;
+            color: white;
+        }
+
+        .btn-confirmar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(15, 157, 138, 0.25);
+        }
+
+        .btn-volver {
+            background: #e7f8f4;
+            color: #145e55;
+        }
+
+        .btn-volver:hover {
+            background: #d8f1ed;
+        }
+
+        .pie {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #64827d;
+        }
+
+        .pie a {
+            color: #0f9d8a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .pie a:hover {
+            text-decoration: underline;
+        }
+
+        .mensaje-exito {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #e8f8f1;
+            color: #166a4f;
+            border: 1px solid #bfe8d6;
+        }
+
+        .mensaje-error {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #ffe8e8;
+            color: #b42318;
+            border: 1px solid #f3b6b6;
+        }
+
+        @media (max-width: 480px) {
+            .cabecera h1 {
+                font-size: 20px;
+            }
+
+            .cuerpo {
+                padding: 20px;
+            }
+
+            .titulo-form {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-reset">
+        <div class="cabecera">
+            <h1>🔐 Nueva contraseña</h1>
+            <p>Establece una nueva contraseña segura</p>
+        </div>
+
+        <div class="cuerpo">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mensaje-{% if message.tags == 'success' %}exito{% else %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <h3 class="titulo-form">Elige una contraseña fuerte</h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="grupo">
+                    <label for="nueva_contrasena">Nueva contraseña *</label>
+                    <input type="password" id="nueva_contrasena" name="nueva_contrasena" required 
+                           placeholder="Mínimo 8 caracteres"
+                           onchange="verificarFuerza()">
+                    <div class="indicador-fuerza" id="indicador-fuerza"></div>
+                </div>
+
+                <div class="grupo">
+                    <label for="confirmar_contrasena">Confirmar contraseña *</label>
+                    <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" required 
+                           placeholder="Repite tu contraseña">
+                </div>
+
+                <div class="botones">
+                    <button type="submit" class="btn-confirmar">Establecer contraseña</button>
+                    <a href="/login/" class="btn-volver">Volver al login</a>
+                </div>
+
+                <div class="pie">
+                    <strong>Recomendaciones de seguridad:</strong><br>
+                    • Usa una contraseña con al menos 8 caracteres<br>
+                    • Incluye letras mayúsculas y minúsculas<br>
+                    • Agrega números o símbolos
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function verificarFuerza() {
+            const contrasena = document.getElementById('nueva_contrasena').value;
+            const indicador = document.getElementById('indicador-fuerza');
+            
+            if (contrasena.length === 0) {
+                indicador.className = 'indicador-fuerza';
+                return;
+            }
+            
+            let fortaleza = 0;
+            
+            if (contrasena.length >= 8) fortaleza++;
+            if (/[a-z]/.test(contrasena)) fortaleza++;
+            if (/[A-Z]/.test(contrasena)) fortaleza++;
+            if (/[0-9]/.test(contrasena)) fortaleza++;
+            if (/[^a-zA-Z0-9]/.test(contrasena)) fortaleza++;
+            
+            if (fortaleza <= 2) {
+                indicador.className = 'indicador-fuerza debil';
+                indicador.textContent = '🔴 Contraseña débil';
+            } else if (fortaleza <= 3) {
+                indicador.className = 'indicador-fuerza normal';
+                indicador.textContent = '🟡 Contraseña normal';
+            } else {
+                indicador.className = 'indicador-fuerza fuerte';
+                indicador.textContent = '🟢 Contraseña fuerte';
+            }
+        }
+    </script>
+</body>
+</html>

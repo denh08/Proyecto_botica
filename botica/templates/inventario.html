@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Botica Virgen de Huata</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            background: #f4fbf9;
+        }
+
+        .header {
+            background: #3f7ae0;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .contenedor {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        table th, table td {
+            border: 1px solid #d9e7e3;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table th {
+            background: #eef5ff;
+        }
+
+        .boton {
+            display: inline-block;
+            text-decoration: none;
+            background: #e8f0ff;
+            color: #1f4ea8;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📦 Inventario</h1>
+    </div>
+
+    <div class="contenedor">
+        <h2>Productos</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio venta</th>
+                <th>Stock mínimo</th>
+            </tr>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.id }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.precio_venta }}</td>
+                <td>{{ producto.stock_minimo }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay productos registrados.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Lotes</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Número lote</th>
+                <th>Fecha vencimiento</th>
+                <th>Stock</th>
+            </tr>
+            {% for lote in lotes %}
+            <tr>
+                <td>{{ lote.id }}</td>
+                <td>{{ lote.producto.nombre }}</td>
+                <td>{{ lote.numero_lote }}</td>
+                <td>{{ lote.fecha_vencimiento|date:"m/Y" }}</td>
+                <td>{{ lote.stock }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No hay lotes registrados.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="/" class="boton">Volver al menú principal</a>
+    </div>
+</body>
+</html>
