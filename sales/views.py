@@ -7,11 +7,20 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
 from inventory.models import Producto, Lote
 from inventory.forms import ProductoConLoteForm
 from .forms import VentaForm, AccountRecoveryForm, RegistroForm
 from .services import registrar_venta, StockInsuficienteError
 from .models import Venta, UserProfile
+
+
+def _build_recovery_url(request, uid, token):
+    path = reverse('recuperar_confirmar', args=[uid, token])
+    base_url = getattr(settings, 'SITE_URL', '').strip().rstrip('/')
+    if base_url:
+        return f"{base_url}{path}"
+    return request.build_absolute_uri(path)
 
 
 @login_required
@@ -152,6 +161,7 @@ def recuperar_cuenta(request):
                 token = default_token_generator.make_token(usuario)
                 
                 if metodo == 'email':
+                    recovery_url = _build_recovery_url(request, uid, token)
                     # Enviar email
                     asunto = "Recuperación de cuenta - Botica Virgen de Huata"
                     mensaje = f"""
@@ -159,7 +169,7 @@ Hola {usuario.username},
 
 Recibimos una solicitud para recuperar tu cuenta. Haz clic en el siguiente enlace para establecer una nueva contraseña:
 
-http://127.0.0.1:8000/recuperar/{uid}/{token}/
+{recovery_url}
 
 Si no solicitaste este cambio, ignora este mensaje.
 

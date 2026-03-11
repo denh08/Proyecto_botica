@@ -8,7 +8,7 @@
 ## 📋 Opción 1: Despliegue en DigitalOcean (Recomendado)
 
 ### Paso 1: Crear un Droplet
-1. Accede a [DigitalOcean](https://www.digitalocean.com)
+1. Accede a [DigitalOcean]( x)
 2. Haz clic en **Create** → **Droplet**
 3. Selecciona:
    - **Image**: Ubuntu 22.04 LTS
