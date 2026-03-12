@@ -20,6 +20,7 @@ class Venta(models.Model):
     cliente = models.CharField(max_length=200, blank=True)
     metodo_pago = models.CharField(max_length=30, default="EFECTIVO")
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    registrado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='ventas_registradas')
 
     def __str__(self):
         return f"Venta #{self.id} - {self.fecha}"

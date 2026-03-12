@@ -3,11 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
+from django.db.models import Sum
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from inventory.models import Producto, Lote
 from inventory.forms import ProductoConLoteForm
 from .forms import VentaForm, AccountRecoveryForm, RegistroForm
@@ -55,7 +57,8 @@ def ventas(request):
                 venta = registrar_venta(
                     items=items_venta,
                     cliente=cliente,
-                    metodo_pago=metodo_pago
+                    metodo_pago=metodo_pago,
+                    registrado_por=request.user,
                 )
                 messages.success(
                     request,
@@ -73,6 +76,38 @@ def ventas(request):
         'form': form,
         'productos_info': productos_info,
         'ultimas_ventas': ultimas_ventas,
+    })
+
+
+@login_required
+def reporte_ventas_diarias(request):
+    fecha_str = request.GET.get('fecha') or timezone.localdate().isoformat()
+    usuario_id = request.GET.get('usuario') or ''
+
+    ventas_qs = Venta.objects.select_related('registrado_por').prefetch_related('detalles__producto').order_by('-fecha')
+
+    try:
+        fecha_filtro = timezone.datetime.strptime(fecha_str, '%Y-%m-%d').date()
+    except ValueError:
+        fecha_filtro = timezone.localdate()
+        fecha_str = fecha_filtro.isoformat()
+
+    ventas_qs = ventas_qs.filter(fecha__date=fecha_filtro)
+
+    if usuario_id:
+        ventas_qs = ventas_qs.filter(registrado_por_id=usuario_id)
+
+    usuarios = User.objects.filter(ventas_registradas__isnull=False).distinct().order_by('username')
+    total_ventas = ventas_qs.count()
+    monto_total = ventas_qs.aggregate(total=Sum('total'))['total'] or 0
+
+    return render(request, 'reporte_ventas_diarias.html', {
+        'ventas': ventas_qs,
+        'usuarios': usuarios,
+        'fecha_filtro': fecha_str,
+        'usuario_seleccionado': usuario_id,
+        'total_ventas': total_ventas,
+        'monto_total': monto_total,
     })
 
 

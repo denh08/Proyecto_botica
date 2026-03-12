@@ -48,13 +48,14 @@ def _registrar_detalles_venta(venta, producto, cantidad):
 
 
 @transaction.atomic
-def registrar_venta(items, cliente="", metodo_pago="EFECTIVO"):
+def registrar_venta(items, cliente="", metodo_pago="EFECTIVO", registrado_por=None):
     total_venta = Decimal("0.00")
 
     venta = Venta.objects.create(
         cliente=cliente,
         metodo_pago=metodo_pago,
-        total=0
+        total=0,
+        registrado_por=registrado_por,
     )
 
     for item in items:

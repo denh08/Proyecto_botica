@@ -300,9 +300,11 @@
                         <thead>
                             <tr>
                                 <th>N°</th>
+                                <th>Fecha</th>
                                 <th>Cliente</th>
                                 <th>Productos</th>
                                 <th>Método</th>
+                                <th>Usuario</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -310,6 +312,7 @@
                             {% for venta in ultimas_ventas %}
                             <tr>
                                 <td>{{ venta.id }}</td>
+                                <td>{{ venta.fecha|date:"d/m/Y H:i" }}</td>
                                 <td>{{ venta.cliente|default:"-" }}</td>
                                 <td>
                                     <div class="detalle-venta">
@@ -321,6 +324,7 @@
                                     </div>
                                 </td>
                                 <td>{{ venta.metodo_pago }}</td>
+                                <td>{{ venta.registrado_por.username|default:"No registrado" }}</td>
                                 <td>S/ {{ venta.total }}</td>
                             </tr>
                             {% endfor %}

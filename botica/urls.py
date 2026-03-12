@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from sales.views import inicio, ventas, inventario, ingreso_productos, recuperar_cuenta, recuperar_confirmar, registro, editar_producto
+from sales.views import inicio, ventas, inventario, ingreso_productos, recuperar_cuenta, recuperar_confirmar, registro, editar_producto, reporte_ventas_diarias
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', inicio, name='inicio'),
     path('ventas/', ventas, name='ventas'),
+    path('reporte-ventas-diarias/', reporte_ventas_diarias, name='reporte_ventas_diarias'),
     path('inventario/', inventario, name='inventario'),
     path('ingreso-productos/', ingreso_productos, name='ingreso_productos'),
     path('editar-producto/<int:producto_id>/', editar_producto, name='editar_producto'),
