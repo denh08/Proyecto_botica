@@ -75,11 +75,27 @@ class RegistroForm(forms.ModelForm):
 
 
 class VentaForm(forms.Form):
-    producto = forms.ModelChoiceField(
+    producto_1 = forms.ModelChoiceField(
         queryset=Producto.objects.filter(activo=True),
-        label="Producto"
+        label="Producto 1",
+        required=False,
+        empty_label="Seleccione un producto"
     )
-    cantidad = forms.IntegerField(min_value=1, label="Cantidad")
+    cantidad_1 = forms.IntegerField(min_value=1, label="Cantidad 1", required=False)
+    producto_2 = forms.ModelChoiceField(
+        queryset=Producto.objects.filter(activo=True),
+        label="Producto 2",
+        required=False,
+        empty_label="Seleccione un producto"
+    )
+    cantidad_2 = forms.IntegerField(min_value=1, label="Cantidad 2", required=False)
+    producto_3 = forms.ModelChoiceField(
+        queryset=Producto.objects.filter(activo=True),
+        label="Producto 3",
+        required=False,
+        empty_label="Seleccione un producto"
+    )
+    cantidad_3 = forms.IntegerField(min_value=1, label="Cantidad 3", required=False)
     cliente = forms.CharField(max_length=200, required=False, label="Cliente")
     metodo_pago = forms.ChoiceField(
         choices=[
@@ -94,13 +110,14 @@ class VentaForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["producto"].widget.attrs.update({
-            "class": "form-control"
-        })
-        self.fields["cantidad"].widget.attrs.update({
-            "class": "form-control",
-            "placeholder": "Ingrese cantidad"
-        })
+        for indice in range(1, 4):
+            self.fields[f"producto_{indice}"].widget.attrs.update({
+                "class": "form-control"
+            })
+            self.fields[f"cantidad_{indice}"].widget.attrs.update({
+                "class": "form-control",
+                "placeholder": "Ingrese cantidad"
+            })
         self.fields["cliente"].widget.attrs.update({
             "class": "form-control",
             "placeholder": "Nombre del cliente"
@@ -108,6 +125,37 @@ class VentaForm(forms.Form):
         self.fields["metodo_pago"].widget.attrs.update({
             "class": "form-control"
         })
+
+    def clean(self):
+        cleaned_data = super().clean()
+        items = []
+        productos_ids = []
+
+        for indice in range(1, 4):
+            producto = cleaned_data.get(f"producto_{indice}")
+            cantidad = cleaned_data.get(f"cantidad_{indice}")
+
+            if producto and not cantidad:
+                self.add_error(f"cantidad_{indice}", "Ingresa la cantidad para este producto.")
+            elif cantidad and not producto:
+                self.add_error(f"producto_{indice}", "Selecciona el producto para esta cantidad.")
+            elif producto and cantidad:
+                if producto.id in productos_ids:
+                    self.add_error(f"producto_{indice}", "No repitas el mismo producto en la misma venta.")
+                productos_ids.append(producto.id)
+                items.append({
+                    "producto": producto,
+                    "cantidad": cantidad,
+                })
+
+        if not items:
+            raise forms.ValidationError("Debes seleccionar al menos un producto para registrar la venta.")
+
+        cleaned_data["items_venta"] = items
+        return cleaned_data
+
+    def obtener_items_venta(self):
+        return self.cleaned_data.get("items_venta", [])
 
 
 class AccountRecoveryForm(forms.Form):

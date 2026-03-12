@@ -91,6 +91,20 @@
             background: #fcfffe;
         }
 
+        .bloque-producto {
+            border: 1px solid #d8ece6;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #fbfffe;
+        }
+
+        .bloque-producto h3 {
+            margin: 0 0 14px 0;
+            color: #145e55;
+            font-size: 17px;
+        }
+
         .grupo input:focus,
         .grupo select:focus {
             outline: none;
@@ -172,6 +186,12 @@
             margin-top: 16px;
         }
 
+        .detalle-venta {
+            color: #51716b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
         @media (max-width: 900px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -200,14 +220,54 @@
                 <form method="post">
                     {% csrf_token %}
 
-                    <div class="grupo">
-                        <label for="{{ form.producto.id_for_label }}">Producto</label>
-                        {{ form.producto }}
+                    {% if form.non_field_errors %}
+                        <div class="mensaje error">
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="bloque-producto">
+                        <h3>Producto 1</h3>
+                        <div class="grupo">
+                            <label for="{{ form.producto_1.id_for_label }}">{{ form.producto_1.label }}</label>
+                            {{ form.producto_1 }}
+                            {% if form.producto_1.errors %}<div class="error">{{ form.producto_1.errors }}</div>{% endif %}
+                        </div>
+                        <div class="grupo">
+                            <label for="{{ form.cantidad_1.id_for_label }}">{{ form.cantidad_1.label }}</label>
+                            {{ form.cantidad_1 }}
+                            {% if form.cantidad_1.errors %}<div class="error">{{ form.cantidad_1.errors }}</div>{% endif %}
+                        </div>
                     </div>
 
-                    <div class="grupo">
-                        <label for="{{ form.cantidad.id_for_label }}">Cantidad</label>
-                        {{ form.cantidad }}
+                    <div class="bloque-producto">
+                        <h3>Producto 2</h3>
+                        <div class="grupo">
+                            <label for="{{ form.producto_2.id_for_label }}">{{ form.producto_2.label }}</label>
+                            {{ form.producto_2 }}
+                            {% if form.producto_2.errors %}<div class="error">{{ form.producto_2.errors }}</div>{% endif %}
+                        </div>
+                        <div class="grupo">
+                            <label for="{{ form.cantidad_2.id_for_label }}">{{ form.cantidad_2.label }}</label>
+                            {{ form.cantidad_2 }}
+                            {% if form.cantidad_2.errors %}<div class="error">{{ form.cantidad_2.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="bloque-producto">
+                        <h3>Producto 3</h3>
+                        <div class="grupo">
+                            <label for="{{ form.producto_3.id_for_label }}">{{ form.producto_3.label }}</label>
+                            {{ form.producto_3 }}
+                            {% if form.producto_3.errors %}<div class="error">{{ form.producto_3.errors }}</div>{% endif %}
+                        </div>
+                        <div class="grupo">
+                            <label for="{{ form.cantidad_3.id_for_label }}">{{ form.cantidad_3.label }}</label>
+                            {{ form.cantidad_3 }}
+                            {% if form.cantidad_3.errors %}<div class="error">{{ form.cantidad_3.errors }}</div>{% endif %}
+                        </div>
                     </div>
 
                     <div class="grupo">
@@ -221,8 +281,7 @@
                     </div>
 
                     <div class="resumen">
-                        <p><strong>Precio unitario:</strong> <span id="precio-unitario">S/ 0.00</span></p>
-                        <p><strong>Stock disponible:</strong> <span id="stock-disponible">0</span></p>
+                        <p><strong>Resumen actual:</strong> <span id="detalle-resumen">Sin productos seleccionados</span></p>
                         <p class="total">Total estimado: <span id="total-estimado">S/ 0.00</span></p>
                     </div>
 
@@ -242,6 +301,7 @@
                             <tr>
                                 <th>N°</th>
                                 <th>Cliente</th>
+                                <th>Productos</th>
                                 <th>Método</th>
                                 <th>Total</th>
                             </tr>
@@ -251,6 +311,15 @@
                             <tr>
                                 <td>{{ venta.id }}</td>
                                 <td>{{ venta.cliente|default:"-" }}</td>
+                                <td>
+                                    <div class="detalle-venta">
+                                        {% for detalle in venta.detalles.all %}
+                                            {{ detalle.producto.nombre }} x {{ detalle.cantidad }}{% if not forloop.last %}<br>{% endif %}
+                                        {% empty %}
+                                            -
+                                        {% endfor %}
+                                    </div>
+                                </td>
                                 <td>{{ venta.metodo_pago }}</td>
                                 <td>S/ {{ venta.total }}</td>
                             </tr>
@@ -266,31 +335,34 @@
 
     <script>
         const productos = {{ productos_info|safe }};
-        const productoSelect = document.getElementById("id_producto");
-        const cantidadInput = document.getElementById("id_cantidad");
-        const precioUnitario = document.getElementById("precio-unitario");
-        const stockDisponible = document.getElementById("stock-disponible");
+        const detalleResumen = document.getElementById("detalle-resumen");
         const totalEstimado = document.getElementById("total-estimado");
 
         function actualizarResumen() {
-            const productoId = parseInt(productoSelect.value);
-            const cantidad = parseInt(cantidadInput.value) || 0;
+            let total = 0;
+            const detalles = [];
 
-            const producto = productos.find(p => p.id === productoId);
+            for (let indice = 1; indice <= 3; indice++) {
+                const productoSelect = document.getElementById(`id_producto_${indice}`);
+                const cantidadInput = document.getElementById(`id_cantidad_${indice}`);
+                const productoId = parseInt(productoSelect.value);
+                const cantidad = parseInt(cantidadInput.value) || 0;
+                const producto = productos.find(p => p.id === productoId);
 
-            if (producto) {
-                precioUnitario.textContent = "S/ " + producto.precio.toFixed(2);
-                stockDisponible.textContent = producto.stock;
-                totalEstimado.textContent = "S/ " + (producto.precio * cantidad).toFixed(2);
-            } else {
-                precioUnitario.textContent = "S/ 0.00";
-                stockDisponible.textContent = "0";
-                totalEstimado.textContent = "S/ 0.00";
+                if (producto && cantidad > 0) {
+                    total += producto.precio * cantidad;
+                    detalles.push(`${producto.nombre} (${cantidad}) - Stock ${producto.stock}`);
+                }
             }
+
+            detalleResumen.textContent = detalles.length ? detalles.join(' | ') : 'Sin productos seleccionados';
+            totalEstimado.textContent = `S/ ${total.toFixed(2)}`;
         }
 
-        productoSelect.addEventListener("change", actualizarResumen);
-        cantidadInput.addEventListener("input", actualizarResumen);
+        for (let indice = 1; indice <= 3; indice++) {
+            document.getElementById(`id_producto_${indice}`).addEventListener("change", actualizarResumen);
+            document.getElementById(`id_cantidad_${indice}`).addEventListener("input", actualizarResumen);
+        }
         window.addEventListener("load", actualizarResumen);
     </script>
 </body>

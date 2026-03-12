@@ -42,20 +42,18 @@ def ventas(request):
             'stock': stock_total,
         })
 
-    ultimas_ventas = Venta.objects.order_by('-id')[:10]
+    ultimas_ventas = Venta.objects.prefetch_related('detalles__producto').order_by('-id')[:10]
 
     if request.method == "POST":
         form = VentaForm(request.POST)
         if form.is_valid():
-            producto = form.cleaned_data["producto"]
-            cantidad = form.cleaned_data["cantidad"]
             cliente = form.cleaned_data["cliente"]
             metodo_pago = form.cleaned_data["metodo_pago"]
+            items_venta = form.obtener_items_venta()
 
             try:
                 venta = registrar_venta(
-                    producto_id=producto.id,
-                    cantidad=cantidad,
+                    items=items_venta,
                     cliente=cliente,
                     metodo_pago=metodo_pago
                 )
