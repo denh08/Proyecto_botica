@@ -99,7 +99,8 @@ def ingreso_productos(request):
                 nombre=form.cleaned_data['nombre'],
                 precio_compra=form.cleaned_data['precio_venta'],  # Se establece igual al precio de venta
                 precio_venta=form.cleaned_data['precio_venta'],
-                stock_minimo=form.cleaned_data['stock_minimo']
+                stock_minimo=form.cleaned_data['stock_minimo'],
+                creado_por=request.user,
             )
             
             # Procesar fecha de vencimiento (formato mes-año a fecha con día 1)
@@ -115,7 +116,8 @@ def ingreso_productos(request):
                 producto=producto,
                 numero_lote=form.cleaned_data['numero_lote'],
                 fecha_vencimiento=fecha_vencimiento,
-                stock=form.cleaned_data['stock']
+                stock=form.cleaned_data['stock'],
+                creado_por=request.user,
             )
             
             messages.success(

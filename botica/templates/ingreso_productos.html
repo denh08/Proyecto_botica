@@ -340,6 +340,7 @@
                                     <th>Lote</th>
                                     <th>Vencimiento</th>
                                     <th>Stock</th>
+                                    <th>Usuario</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -349,6 +350,7 @@
                                     <td>{{ lote.numero_lote }}</td>
                                     <td>{{ lote.fecha_vencimiento|date:"m/Y" }}</td>
                                     <td><strong>{{ lote.stock }}</strong></td>
+                                    <td>{{ lote.creado_por.username|default:'No registrado' }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -367,6 +369,7 @@
                                     <th>Nombre</th>
                                     <th>Precio</th>
                                     <th>Stock</th>
+                                    <th>Usuario</th>
                                     <th>Acción</th>
                                 </tr>
                             </thead>
@@ -376,6 +379,7 @@
                                     <td>{{ medicamento.nombre|truncatewords:3 }}</td>
                                     <td>S/ {{ medicamento.precio_venta }}</td>
                                     <td>{{ medicamento.stock_minimo }}</td>
+                                    <td>{{ medicamento.creado_por.username|default:'No registrado' }}</td>
                                     <td style="text-align: center;">
                                         <a href="{% url 'editar_producto' medicamento.id %}" title="Editar medicamento" style="color: #ef9b28; text-decoration: none; font-size: 16px;">✏️</a>
                                     </td>

@@ -70,6 +70,8 @@
                 <th>Nombre</th>
                 <th>Precio venta</th>
                 <th>Stock mínimo</th>
+                <th>Creado por</th>
+                <th>Fecha registro</th>
             </tr>
             {% for producto in productos %}
             <tr>
@@ -77,10 +79,12 @@
                 <td>{{ producto.nombre }}</td>
                 <td>{{ producto.precio_venta }}</td>
                 <td>{{ producto.stock_minimo }}</td>
+                <td>{{ producto.creado_por.username|default:'No registrado' }}</td>
+                <td>{{ producto.fecha_creacion|date:"d/m/Y H:i" }}</td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No hay productos registrados.</td>
+                <td colspan="6">No hay productos registrados.</td>
             </tr>
             {% endfor %}
         </table>
@@ -93,6 +97,8 @@
                 <th>Número lote</th>
                 <th>Fecha vencimiento</th>
                 <th>Stock</th>
+                <th>Creado por</th>
+                <th>Fecha registro</th>
             </tr>
             {% for lote in lotes %}
             <tr>
@@ -101,10 +107,12 @@
                 <td>{{ lote.numero_lote }}</td>
                 <td>{{ lote.fecha_vencimiento|date:"m/Y" }}</td>
                 <td>{{ lote.stock }}</td>
+                <td>{{ lote.creado_por.username|default:'No registrado' }}</td>
+                <td>{{ lote.fecha_creacion|date:"d/m/Y H:i" }}</td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5">No hay lotes registrados.</td>
+                <td colspan="7">No hay lotes registrados.</td>
             </tr>
             {% endfor %}
         </table>
